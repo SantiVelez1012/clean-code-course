@@ -1,6 +1,7 @@
 (() => {
 
-    //No aplicando el principio de responsabilidad unica
+    //Aplicando el principio de responsabilidad unica
+    //Priorizar la composición frente a la herencia
 
     type Gender = 'M' | 'F';
 
@@ -24,25 +25,39 @@
     interface UserInfo {
         email: string;
         role: string;
-        name: string;
-        gender: Gender;
-        birthDate: Date;
     }
 
-    class User extends Person {
-        private lastAccess: Date;
+    class User {
         email: string;
         role: string;
+        private lastAccess: Date;
         constructor(
-            { email, role, name, gender, birthDate }: UserInfo
+            { email, role }: UserInfo
         ) {
-            super({ name, gender, birthDate });
             this.email = email;
-            this.role = role;
             this.lastAccess = new Date();
+            this.role = role;
         }
         checkCredentials() {
             return true;
+        }
+    }
+
+    interface SettingsInfo {
+        workingDirectory: string;
+        lastOpenFolder: string;
+    }
+
+    class Settings {
+        workingDirectory: string;
+        lastOpenFolder: string;
+        constructor(
+            { workingDirectory,
+                lastOpenFolder
+            }: SettingsInfo
+        ) {
+            this.workingDirectory = workingDirectory;
+            this.lastOpenFolder = lastOpenFolder;
         }
     }
 
@@ -56,21 +71,15 @@
         birthDate: Date;
     }
 
-    class UserSettings extends User {
-        workingDirectory: string;
-        lastOpenFolder: string;
-        constructor(
-            { workingDirectory,
-                lastOpenFolder,
-                email,
-                role,
-                name,
-                gender,
-                birthDate }: UserSettingsInfo
-        ) {
-            super({ email, role, name, gender, birthDate });
-            this.workingDirectory = workingDirectory;
-            this.lastOpenFolder = lastOpenFolder;
+    class UserSettings{
+        public person:Person;
+        public user:User;
+        public settings:Settings;
+        constructor({name, gender, birthDate, email, role, workingDirectory, lastOpenFolder}:UserSettingsInfo){
+            this.person = new Person({name, gender, birthDate});
+            this.user = new User({email, role});
+            this.settings = new Settings({workingDirectory, lastOpenFolder});
+
         }
     }
 
